@@ -98,7 +98,7 @@
                     <span class="help-block">{{ trans('cruds.task.fields.assigned_to_helper') }}</span>
                 </div>
             @else 
-            <input type="hidden" name="assigned_to_id" value="@php Auth::id() @endphp" id="">
+            <input type="hidden" name="assigned_to_id" value="@php echo Auth::id(); @endphp" id="">
             @endif
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
