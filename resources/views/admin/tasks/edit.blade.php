@@ -83,6 +83,8 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.task.fields.due_date_helper') }}</span>
             </div>
+            
+            @if(auth()->user()->roles->contains(1))
             <div class="form-group">
                 <label for="assigned_to_id">{{ trans('cruds.task.fields.assigned_to') }}</label>
                 <select class="form-control select2 {{ $errors->has('assigned_to') ? 'is-invalid' : '' }}" name="assigned_to_id" id="assigned_to_id">
@@ -97,6 +99,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.task.fields.assigned_to_helper') }}</span>
             </div>
+            @endif
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}

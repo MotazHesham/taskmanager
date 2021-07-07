@@ -82,20 +82,24 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.task.fields.due_date_helper') }}</span>
             </div>
-            <div class="form-group">
-                <label for="assigned_to_id">{{ trans('cruds.task.fields.assigned_to') }}</label>
-                <select class="form-control select2 {{ $errors->has('assigned_to') ? 'is-invalid' : '' }}" name="assigned_to_id" id="assigned_to_id">
-                    @foreach($assigned_tos as $id => $entry)
-                        <option value="{{ $id }}" {{ old('assigned_to_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('assigned_to'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('assigned_to') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.task.fields.assigned_to_helper') }}</span>
-            </div>
+            @if(auth()->user()->roles->contains(1))
+                <div class="form-group">
+                    <label for="assigned_to_id">{{ trans('cruds.task.fields.assigned_to') }}</label>
+                    <select class="form-control select2 {{ $errors->has('assigned_to') ? 'is-invalid' : '' }}" name="assigned_to_id" id="assigned_to_id">
+                        @foreach($assigned_tos as $id => $entry)
+                            <option value="{{ $id }}" {{ old('assigned_to_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        @endforeach
+                    </select>
+                    @if($errors->has('assigned_to'))
+                        <div class="invalid-feedback">
+                            {{ $errors->first('assigned_to') }}
+                        </div>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.task.fields.assigned_to_helper') }}</span>
+                </div>
+            @else 
+            <input type="hidden" name="assigned_to_id" value="@php Auth::id() @endphp" id="">
+            @endif
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
