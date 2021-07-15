@@ -7,7 +7,7 @@ return [
     'areYouSure'                     => 'هل أنت متأكد؟',
     'clickHereToVerify'              => 'اضغط هنا للتحقق',
     'create'                         => 'إضافة',
-    'dashboard'                      => 'الرئيسية',
+    'dashboard'                      => 'المحادثات',
     'delete'                         => 'حذف',
     'cancel'                         => 'إغلاق',
     'clear'                          => 'مسح',

@@ -6,11 +6,11 @@ use \DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TaskStatus extends Model
+class Chat extends Model
 {
     use SoftDeletes;
 
-    public $table = 'task_statuses';
+    public $table = 'chatting';
 
     protected $dates = [
         'created_at',
@@ -19,13 +19,15 @@ class TaskStatus extends Model
     ];
 
     protected $fillable = [
-        'name',
-        'icon',
-        'icon_color',
+        'message',
+        'seen',
+        'seen',
+        'sender_id',
+        'receiver_id',
         'created_at',
         'updated_at',
         'deleted_at',
-    ];
+    ]; 
 
     protected function serializeDate(DateTimeInterface $date)
     {

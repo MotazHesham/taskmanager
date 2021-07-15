@@ -10,11 +10,13 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Spatie\MediaLibrary\Models\Media;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-    use SoftDeletes;
-    use Notifiable;
+    use SoftDeletes, Notifiable, HasMediaTrait;
 
     public $table = 'users';
 
@@ -23,6 +25,9 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected $appends = [
+        'photo', 
+    ];
     protected $dates = [
         'email_verified_at',
         'created_at',
@@ -40,6 +45,27 @@ class User extends Authenticatable
         'updated_at',
         'deleted_at',
     ];
+
+    public function registerMediaConversions(Media $media = null)
+    {
+        $this->addMediaConversion('thumb')->fit('crop', 50, 50);
+        $this->addMediaConversion('preview')->fit('crop', 120, 120);
+        $this->addMediaConversion('new_preview')->fit('crop', 300, 300);
+    }
+    
+    public function getPhotoAttribute()
+    {
+        $file = $this->getMedia('photo')->last();
+
+        if ($file) {
+            $file->url              = $file->getUrl();
+            $file->thumbnail        = $file->getUrl('thumb');
+            $file->preview          = $file->getUrl('preview');
+            $file->new_preview      = $file->getUrl('new_preview');
+        }
+
+        return $file;
+    }
 
     public function getIsAdminAttribute()
     {
@@ -81,5 +107,11 @@ class User extends Authenticatable
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    
+    public function chatting()
+    {
+        return $this->hasMany(Chat::class,'receiver_id');
     }
 }

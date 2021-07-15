@@ -44,7 +44,14 @@
                             {{ trans('cruds.task.fields.status') }}
                         </th>
                         <td>
-                            {{ $task->status->name ?? '' }}
+                            @if($task->done)
+                                تم الانتهاء في <i class="fa fa-check-circle-o" style="font-size: 30px;color:#82E0AA"></i>
+                                <br>
+                                {{$task->done_time}}
+                            @else 
+                                {{ $task->status->name ?? '' }}  <i class="fa {{$task->status->icon}}" style="color:{{$task->status->icon_color}};font-size:20px"></i> 
+                                    
+                            @endif
                         </td>
                     </tr>
                     <tr>
@@ -71,10 +78,11 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.task.fields.due_date') }}
+                            {{ trans('cruds.task.fields.date') }}
                         </th>
                         <td>
-                            {{ $task->due_date }}
+                            <span class="badge bg-light">{{$task->start_date ?? ''}}</span><br>
+                            <span class="badge bg-dark text-white">{{$task->end_date ?? ''}}</span>
                         </td>
                     </tr>
                     <tr>
@@ -83,6 +91,14 @@
                         </th>
                         <td>
                             {{ $task->assigned_to->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.task.fields.created_at') }}
+                        </th>
+                        <td>
+                            {{ $task->created_at ?? '' }}
                         </td>
                     </tr>
                 </tbody>

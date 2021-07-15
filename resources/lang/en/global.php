@@ -7,7 +7,7 @@ return [
     'areYouSure'                     => 'Are you sure?',
     'clickHereToVerify'              => 'Click here to verify',
     'create'                         => 'Create',
-    'dashboard'                      => 'Dashboard',
+    'dashboard'                      => 'Chatting',
     'delete'                         => 'Delete',
     'cancel'                         => 'Cancel',
     'clear'                          => 'Clear',

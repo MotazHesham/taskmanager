@@ -41,11 +41,14 @@
                             {{ trans('cruds.task.fields.attachment') }}
                         </th>
                         <th>
-                            {{ trans('cruds.task.fields.due_date') }}
+                            {{ trans('cruds.task.fields.date') }}
                         </th>
                         <th>
                             {{ trans('cruds.task.fields.assigned_to') }}
-                        </th>
+                        </th> 
+                        <th>
+                            {{ trans('cruds.task.fields.created_at') }}
+                        </th> 
                         <th>
                             &nbsp;
                         </th>
@@ -67,7 +70,14 @@
                                 {{ $task->description ?? '' }}
                             </td>
                             <td>
-                                {{ $task->status->name ?? '' }}
+                                @if($task->done)
+                                    تم الانتهاء في <i class="fa fa-check-circle-o" style="font-size: 30px;color:#82E0AA"></i>
+                                    <br>
+                                    {{$task->done_time}}
+                                @else 
+                                    {{ $task->status->name ?? '' }}  <i class="fa {{$task->status->icon}}" style="color:{{$task->status->icon_color}};font-size:20px"></i> 
+                                        
+                                @endif
                             </td>
                             <td>
                                 @foreach($task->tags as $key => $item)
@@ -82,11 +92,15 @@
                                 @endif
                             </td>
                             <td>
-                                {{ $task->due_date ?? '' }}
+                                <span class="badge bg-light">{{$task->start_date ?? ''}}</span><br>
+                                <span class="badge bg-dark text-white">{{$task->end_date ?? ''}}</span>
                             </td>
                             <td>
                                 {{ $task->assigned_to->name ?? '' }}
-                            </td>
+                            </td> 
+                            <td>
+                                {{ $task->created_at ?? '' }}
+                            </td> 
                             <td>
                                 @can('task_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.tasks.show', $task->id) }}">
@@ -94,19 +108,25 @@
                                     </a>
                                 @endcan
 
-                                @can('task_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.tasks.edit', $task->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
+                                @if(!$task->done)
+                                
+                                    <a href="{{route('admin.tasks.update_done',$task->id)}}" class="btn btn-success btn-xs">{{ trans('cruds.task.fields.done') }}</a>
+                                    
+                                    <br>
+                                    @can('task_edit')
+                                        <a class="btn btn-xs btn-info" href="{{ route('admin.tasks.edit', $task->id) }}">
+                                            {{ trans('global.edit') }}
+                                        </a>
+                                    @endcan
 
-                                @can('task_delete')
-                                    <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
+                                    @can('task_delete')
+                                        <form action="{{ route('admin.tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        </form>
+                                    @endcan
+                                @endif
 
                             </td>
 
@@ -123,7 +143,8 @@
 @endsection
 @section('scripts')
 @parent
-<script>
+<script> 
+
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('task_delete')

@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\MediaLibrary\Models\Media;
+use App\Traits\Auditable;
 
 class Task extends Model implements HasMedia
 {
-    use SoftDeletes;
-    use HasMediaTrait;
+    use SoftDeletes, HasMediaTrait, Auditable;
 
     public $table = 'tasks';
 
@@ -22,7 +22,9 @@ class Task extends Model implements HasMedia
     ];
 
     protected $dates = [
-        'due_date',
+        'start_date',
+        'end_date',
+        'done_time',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -32,7 +34,10 @@ class Task extends Model implements HasMedia
         'name',
         'description',
         'status_id',
-        'due_date',
+        'start_date',
+        'end_date',
+        'done_time',
+        'done',
         'assigned_to_id',
         'created_at',
         'updated_at',
@@ -60,15 +65,38 @@ class Task extends Model implements HasMedia
         return $this->getMedia('attachment')->last();
     }
 
-    public function getDueDateAttribute($value)
+    public function getStartDateAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+        return $value ? Carbon::parse($value)->format(config('panel.date_format') . " " . config('panel.time_format')) : null;
     }
 
-    public function setDueDateAttribute($value)
+    public function setStartDateAttribute($value)
     {
-        $this->attributes['due_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        $this->attributes['start_date'] = $value ? Carbon::createFromFormat(config('panel.date_format') . " " . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     }
+    
+    public function getEndDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format') . " " . config('panel.time_format')) : null;
+    }
+
+    public function setEndDateAttribute($value)
+    {
+        $this->attributes['end_date'] = $value ? Carbon::createFromFormat(config('panel.date_format') . " " . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+    public function getDoneTimeAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format') . " " . config('panel.time_format')) : null;
+    }
+    public function getCreatedAtAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format') . " " . config('panel.time_format')) : null;
+    }
+    public function custom_date($value)
+    {
+        return  $value ? Carbon::createFromFormat(config('panel.date_format') . " " . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
 
     public function assigned_to()
     {

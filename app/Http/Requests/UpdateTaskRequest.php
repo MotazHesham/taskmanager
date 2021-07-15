@@ -31,9 +31,13 @@ class UpdateTaskRequest extends FormRequest
             'tags' => [
                 'array',
             ],
-            'due_date' => [
-                'date_format:' . config('panel.date_format'),
+            'start_date' => [
                 'nullable',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            ],
+            'end_date' => [
+                'nullable',
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
             ],
         ];
     }

@@ -9,7 +9,7 @@ class TasksCalendarController extends Controller
 {
     public function index()
     {
-        $events = Task::whereNotNull('due_date')->get();
+        $events = Task::whereNotNull('start_date')->whereNotNull('end_date')->get();
 
         return view('admin.tasksCalendars.index', compact('events'));
     }

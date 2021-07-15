@@ -11,6 +11,7 @@ use App\Models\Task;
 use App\Models\TaskStatus;
 use App\Models\TaskTag;
 use App\Models\User;
+use App\Models\UserAlert;
 use Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\Models\Media;
@@ -19,6 +20,15 @@ use Symfony\Component\HttpFoundation\Response;
 class TaskController extends Controller
 {
     use MediaUploadingTrait;
+
+    
+    public function update_done($id){
+        $task = Task::find($id);
+        $task->done = 1;
+        $task->done_time = date('Y-m-d H:i:s',strtotime('now'));
+        $task->save();
+        return back();
+    }
 
     public function index()
     {
@@ -48,13 +58,21 @@ class TaskController extends Controller
     }
 
     public function store(StoreTaskRequest $request)
-    {
+    { 
         $task = Task::create($request->all());
         $task->tags()->sync($request->input('tags', []));
         if ($request->input('attachment', false)) {
             $task->addMedia(storage_path('tmp/uploads/' . basename($request->input('attachment'))))->toMediaCollection('attachment');
         }
-
+        $userAlert = UserAlert::create([
+            'alert_text' => 'مهمة جديدة ('. $task->name . ')',
+            'alert_link' => '',
+            'type' => 'system',
+        ]);
+        
+        $userAlert->users()->sync([$task->assigned_to_id]);
+        
+        
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $task->id]);
         }
@@ -63,7 +81,11 @@ class TaskController extends Controller
     }
 
     public function edit(Task $task)
-    {
+    {   
+        if($task->done){
+            flash('Task is Done');
+            return back();
+        }
         abort_if(Gate::denies('task_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $statuses = TaskStatus::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');

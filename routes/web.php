@@ -13,6 +13,12 @@ Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
     Route::get('/', 'HomeController@index')->name('home');
+    
+    // Chatting 
+    Route::post('/chatting/show','HomeController@show')->name('chatting.show');
+    Route::post('/chatting/send','HomeController@send')->name('chatting.send');
+    Route::post('/chatting/refresh_contacts','HomeController@index')->name('chatting.refresh_contacts');
+
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     Route::resource('permissions', 'PermissionsController');
@@ -23,6 +29,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
+    Route::post('users/media', 'UsersController@storeMedia')->name('users.storeMedia');
+    Route::post('users/ckmedia', 'UsersController@storeCKEditorImages')->name('users.storeCKEditorImages');
     Route::resource('users', 'UsersController');
 
     // Task Status
@@ -35,6 +43,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Task
     Route::delete('tasks/destroy', 'TaskController@massDestroy')->name('tasks.massDestroy');
+    Route::get('tasks/update_done/{id}', 'TaskController@update_done')->name('tasks.update_done');
     Route::post('tasks/media', 'TaskController@storeMedia')->name('tasks.storeMedia');
     Route::post('tasks/ckmedia', 'TaskController@storeCKEditorImages')->name('tasks.storeCKEditorImages');
     Route::resource('tasks', 'TaskController');

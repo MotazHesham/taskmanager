@@ -29,6 +29,9 @@
                             {{ trans('cruds.taskStatus.fields.name') }}
                         </th>
                         <th>
+                            {{ trans('cruds.taskStatus.fields.icon') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -46,12 +49,9 @@
                                 {{ $taskStatus->name ?? '' }}
                             </td>
                             <td>
-                                @can('task_status_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.task-statuses.show', $taskStatus->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
+                                <i class="fa {{$taskStatus->icon}}" style="color:{{$taskStatus->icon_color}};font-size:40px"></i>
+                            </td>
+                            <td> 
                                 @can('task_status_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.task-statuses.edit', $taskStatus->id) }}">
                                         {{ trans('global.edit') }}
